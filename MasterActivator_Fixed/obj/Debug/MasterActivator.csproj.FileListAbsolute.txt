@@ -14,3 +14,6 @@ C:\LeagueSharp\System\My Repo\MasterActivator\bin\Release\SharpDX.Toolkit.Graphi
 C:\LeagueSharp\System\My Repo\MasterActivator\obj\Debug\MasterActivator.exe
 C:\LeagueSharp\System\My Repo\MasterActivator\obj\Debug\MasterActivator.pdb
 C:\LeagueSharp\System\My Repo\MasterActivator\obj\Debug\MasterActivator.csprojResolveAssemblyReference.cache
+C:\Users\Alex™\Documents\GitHub\LSharp\MasterActivator_Fixed\bin\Release\MasterActivator.exe.config
+C:\Users\Alex™\Documents\GitHub\LSharp\MasterActivator_Fixed\obj\Debug\MasterActivator.exe
+C:\Users\Alex™\Documents\GitHub\LSharp\MasterActivator_Fixed\obj\Debug\MasterActivator.pdb
