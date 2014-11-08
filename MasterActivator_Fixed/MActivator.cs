@@ -726,6 +726,10 @@ namespace MasterActivator
 
         private bool check_ByAlxspb(float range)
         {
+            if (range == 0)
+            {
+                range = _player.AttackRange + 125;
+            }
             var tar = SimpleTs.GetTarget(range, SimpleTs.DamageType.True);
             return tar != null ? true : false;
         }
