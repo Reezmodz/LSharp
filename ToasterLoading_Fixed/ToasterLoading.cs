@@ -2,9 +2,10 @@
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Speech.Synthesis;
 using System.Timers;
 using LeagueSharp;
-using System.Speech.Synthesis;
+using ToasterLoading.Properties;
 
 /*
     Copyright (C) 2014 Nikita Bernthaler
@@ -27,45 +28,45 @@ namespace ToasterLoading
 {
     internal class ToasterLoading
     {
-        private static SpeechSynthesizer ss = new SpeechSynthesizer();
         private const int WM_KEYUP = 0x101;
         private const int Disable = 0x20; // Space
-
         private const int SecondsToWait = 250;
-
-        private readonly MemoryStream _packet;
+        private static readonly SpeechSynthesizer Ss = new SpeechSynthesizer();
+        private static readonly MainView Mv = new MainView();
         private bool _escaped;
-        private Timer _timer;
         private Timer _time;
-        private static MainView mv = new MainView();
+        private Timer _timer;
+        private readonly MemoryStream _packet;
 
         public ToasterLoading()
         {
-            mv.Show();
+            Mv.Show();
             _packet = new MemoryStream();
             Game.OnGameSendPacket += OnGameSendPacket;
             Game.OnWndProc += OnWndProc;
             Drawing.OnDraw += OnDraw;
-            ss.Volume = 100;
-            ss.SelectVoice(ss.GetInstalledVoices()[1].VoiceInfo.Name);
-            ss.SpeakAsync("Toaster Loading by Alxspb Started... Waiting for packet.");
+            Ss.Volume = 100;
+            Ss.SelectVoice(Ss.GetInstalledVoices()[1].VoiceInfo.Name);
+            Ss.SpeakAsync("Toaster Loading by Alxspb Started... Waiting for packet.");
         }
 
         private void OnWndProc(WndEventArgs args)
         {
             try
             {
-                if (args.Msg == WM_KEYUP && args.WParam == Disable && !_escaped)
+                if (args.Msg != WM_KEYUP || args.WParam != Disable || _escaped)
                 {
-                    _escaped = true;
-                    mv.pictureBox1.Image = Properties.Resources.toaster_anim;
-                    _time = new Timer(5000);
-                    _time.Elapsed += OnTimeEnd;
-                    _time.Start();
-                    ss.SpeakAsync("Toaster disabled. Game will start is several seconds.");
-                    Game.SendPacket(_packet.ToArray(), PacketChannel.C2S, PacketProtocolFlags.Reliable);
-                    _packet.Close();
+                    return;
                 }
+
+                _escaped = true;
+                Mv.pictureBox1.Image = Resources.toaster_anim;
+                _time = new Timer(5000);
+                _time.Elapsed += OnTimeEnd;
+                _time.Start();
+                Ss.SpeakAsync("Toaster disabled. Game will start is several seconds.");
+                Game.SendPacket(_packet.ToArray(), PacketChannel.C2S, PacketProtocolFlags.Reliable);
+                _packet.Close();
             }
             catch (Exception ex)
             {
@@ -78,7 +79,9 @@ namespace ToasterLoading
             try
             {
                 if (_escaped)
+                {
                     return;
+                }
 
                 Drawing.DrawText(10, 10, Color.Green, Assembly.GetExecutingAssembly().GetName().Name);
             }
@@ -93,15 +96,17 @@ namespace ToasterLoading
         {
             try
             {
-                if (args.PacketData[0] == 16 && !_escaped)
+                if (args.PacketData[0] != 16 || _escaped)
                 {
-                    ss.SpeakAsync("Packet caught. Waiting for escape.");
-                    args.Process = false;
-                    _packet.Write(args.PacketData, 0, args.PacketData.Length);
-                    _timer = new Timer(SecondsToWait*1000);
-                    _timer.Elapsed += OnTimedEvent;
-                    _timer.Start();
+                    return;
                 }
+
+                Ss.SpeakAsync("Packet caught. Waiting for escape.");
+                args.Process = false;
+                _packet.Write(args.PacketData, 0, args.PacketData.Length);
+                _timer = new Timer(SecondsToWait*1000);
+                _timer.Elapsed += OnTimedEvent;
+                _timer.Start();
             }
             catch (Exception ex)
             {
@@ -126,11 +131,12 @@ namespace ToasterLoading
                 Console.WriteLine(ex.ToString());
             }
         }
+
         private void OnTimeEnd(object source, ElapsedEventArgs e)
         {
             try
             {
-                mv.Hide();
+                Mv.Hide();
                 _timer.Close();
             }
             catch (Exception ex)
