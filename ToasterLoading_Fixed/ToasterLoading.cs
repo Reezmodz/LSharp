@@ -115,6 +115,11 @@ namespace ToasterLoading
             {
                 if (!_escaped)
                 {
+                    mv.pictureBox1.Image = Properties.Resources.toaster_anim;
+                    _time = new Timer(5000);
+                    _time.Elapsed += OnTimeEnd;
+                    _time.Start();
+                    ss.SpeakAsync("Toaster disabled. Game will start is several seconds.");
                     _escaped = true;
                     Game.SendPacket(_packet.ToArray(), PacketChannel.C2S, PacketProtocolFlags.Reliable);
                     _packet.Close();
