@@ -12,12 +12,7 @@ namespace FioraLoader
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Process Started.");
-            Process.Start("Fiora.exe");
-            while(true)
-            {
-
-            }
+            Process.Start("FioraCore.exe");
         }
     }
 }
