@@ -15,7 +15,6 @@ namespace FioraLoader
 
         static void Main(string[] args)
         {
-            MessageBox.Show(directory);
             if(File.Exists(Path.Combine(directory, "FioraCore.exe")))
             {
                 File.Delete(Path.Combine(directory, "FioraCore.exe"));
